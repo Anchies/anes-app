@@ -55,21 +55,15 @@ exports.handler = async (event, context) => {
 
     const data = await response.json();
 
-    const content =
-      data?.choices?.[0]?.message?.content || "No response from AI.";
-
     return {
       statusCode: 200,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ai: content }),
+      body: JSON.stringify({ ai: data?.choices?.[0]?.message?.content || "No response" }),
     };
   } catch (err) {
     return {
       statusCode: 500,
-      body: JSON.stringify({
-        error: "Server error",
-        details: err.message,
-      }),
+      body: JSON.stringify({ error: "Server error", details: err.message }),
     };
   }
 };
