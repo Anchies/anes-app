@@ -1,7 +1,5 @@
 // Netlify serverless function for 1nes AI
-
-// Fix for Netlify: include fetch manually
-const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
+// Node 18+ on Netlify supports fetch natively.
 
 exports.handler = async (event, context) => {
     if (event.httpMethod !== "POST") {
@@ -34,46 +32,3 @@ exports.handler = async (event, context) => {
         ];
 
         const apiKey = process.env.OPENAI_API_KEY;
-
-        if (!apiKey) {
-            return {
-                statusCode: 500,
-                body: JSON.stringify({ error: "Missing OPENAI_API_KEY" }),
-            };
-        }
-
-        const response = await fetch("https://api.openai.com/v1/chat/completions", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${apiKey}`
-            },
-            body: JSON.stringify({
-                model: "gpt-4o-mini",
-                messages,
-                max_tokens: 450
-            })
-        });
-
-        const data = await response.json();
-
-        const content =
-            data?.choices?.[0]?.message?.content ||
-            "No response from AI.";
-
-        return {
-            statusCode: 200,
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ai: content }),
-        };
-
-    } catch (err) {
-        return {
-            statusCode: 500,
-            body: JSON.stringify({
-                error: "Server error",
-                details: err.message
-            })
-        };
-    }
-};
