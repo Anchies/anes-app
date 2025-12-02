@@ -1,4 +1,4 @@
-// 1nes AI - Fully working OpenAI Netlify Function (NEW API)
+// Netlify function using Chat Completions API (100% working)
 
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
@@ -13,9 +13,9 @@ exports.handler = async (event) => {
 
     const systemPrompt =
       mode === "ideas"
-        ? "You are a productivity coach helping users decide what to work on."
+        ? "You help users decide what to work on right now."
         : mode === "tasks"
-        ? "You break goals into clear, simple, actionable steps."
+        ? "You break any goal into simple steps."
         : "You are a senior developer who writes and explains code.";
 
     const apiKey = process.env.OPENAI_API_KEY;
@@ -29,25 +29,29 @@ exports.handler = async (event) => {
       };
     }
 
-    // ⭐ CORRECT OpenAI Responses API format
-    const response = await fetch("https://api.openai.com/v1/responses", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        // NEW FORMAT → "input" is a SINGLE STRING
-        input: `${systemPrompt}\nUser: ${prompt}`,
-        max_output_tokens: 300,
-      }),
-    });
+    const response = await fetch(
+      "https://api.openai.com/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: prompt },
+          ],
+          max_tokens: 300,
+        }),
+      }
+    );
 
     const data = await response.json();
 
-    // ⭐ CORRECT response field
-    const reply = data.output_text || "No AI response.";
+    const reply =
+      data?.choices?.[0]?.message?.content || "No AI response.";
 
     return {
       statusCode: 200,
