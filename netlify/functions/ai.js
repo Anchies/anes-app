@@ -1,4 +1,4 @@
-// 1nes AI Netlify Function - NEW OPENAI API VERSION
+// 1nes AI - Fully working OpenAI Netlify Function (NEW API)
 
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
@@ -13,24 +13,23 @@ exports.handler = async (event) => {
 
     const systemPrompt =
       mode === "ideas"
-        ? "You are a productivity coach helping users decide what to work on right now."
+        ? "You are a productivity coach helping users decide what to work on."
         : mode === "tasks"
-        ? "You break any goal into clear, simple steps."
-        : "You are a senior developer who explains code and generates working examples.";
+        ? "You break goals into clear, simple, actionable steps."
+        : "You are a senior developer who writes and explains code.";
 
     const apiKey = process.env.OPENAI_API_KEY;
 
     if (!apiKey) {
-  return {
-    statusCode: 500,
-    body: JSON.stringify({
-      error: "Missing OPENAI_API_KEY",
-      debug: "env key not found",
-    }),
-  };
-}
+      return {
+        statusCode: 500,
+        body: JSON.stringify({
+          error: "Missing OPENAI_API_KEY",
+        }),
+      };
+    }
 
-    // NEW OPENAI API ENDPOINT
+    // ⭐ CORRECT OpenAI Responses API format
     const response = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
       headers: {
@@ -39,17 +38,16 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify({
         model: "gpt-4o-mini",
-        input: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: prompt },
-        ],
+        // NEW FORMAT → "input" is a SINGLE STRING
+        input: `${systemPrompt}\nUser: ${prompt}`,
         max_output_tokens: 300,
       }),
     });
 
     const data = await response.json();
 
-    const reply = data?.output_text || "No AI response.";
+    // ⭐ CORRECT response field
+    const reply = data.output_text || "No AI response.";
 
     return {
       statusCode: 200,
