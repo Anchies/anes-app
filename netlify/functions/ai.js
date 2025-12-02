@@ -1,7 +1,6 @@
-// Netlify serverless function for 1nes AI
-// Uses native fetch available in Node 18+ runtime
+// 1nes AI Netlify Function - NEW OPENAI API VERSION
 
-exports.handler = async (event, context) => {
+exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
@@ -12,24 +11,12 @@ exports.handler = async (event, context) => {
   try {
     const { prompt, mode } = JSON.parse(event.body || "{}");
 
-    if (!prompt) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: "Missing prompt" }),
-      };
-    }
-
     const systemPrompt =
       mode === "ideas"
         ? "You are a productivity coach helping users decide what to work on right now."
         : mode === "tasks"
-        ? "You break any goal into clear steps with structure and momentum."
-        : "You are a senior developer who writes clean code and explains how it works.";
-
-    const messages = [
-      { role: "system", content: systemPrompt },
-      { role: "user", content: prompt },
-    ];
+        ? "You break any goal into clear, simple steps."
+        : "You are a senior developer who explains code and generates working examples.";
 
     const apiKey = process.env.OPENAI_API_KEY;
 
@@ -40,7 +27,8 @@ exports.handler = async (event, context) => {
       };
     }
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    // NEW OPENAI API ENDPOINT
+    const response = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -48,22 +36,27 @@ exports.handler = async (event, context) => {
       },
       body: JSON.stringify({
         model: "gpt-4o-mini",
-        messages,
-        max_tokens: 450,
+        input: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: prompt },
+        ],
+        max_output_tokens: 300,
       }),
     });
 
     const data = await response.json();
 
+    const reply = data?.output_text || "No AI response.";
+
     return {
       statusCode: 200,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ai: data?.choices?.[0]?.message?.content || "No response" }),
+      body: JSON.stringify({ ai: reply }),
     };
   } catch (err) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Server error", details: err.message }),
+      body: JSON.stringify({ error: err.message }),
     };
   }
 };
