@@ -1,0 +1,74 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0f0f0f;
+    color: #fff;
+}
+
+.app {
+    max-width: 700px;
+    margin: auto;
+    padding: 20px;
+}
+
+.app-header h1 {
+    font-size: 32px;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    color: #aaa;
+    font-size: 14px;
+}
+
+.mode-switcher {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.mode-btn {
+    flex: 1;
+    padding: 10px;
+    background: #1d1d1d;
+    border: none;
+    color: #eee;
+    cursor: pointer;
+}
+
+.mode-btn.active {
+    background: #2c72ff;
+    color: #fff;
+}
+
+.input-section textarea {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    background: #1d1d1d;
+    border: 1px solid #333;
+    color: white;
+}
+
+#runBtn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    background: #2c72ff;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.response-box {
+    min-height: 120px;
+    padding: 15px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    margin-top: 10px;
+}
+
+.placeholder {
+    color: #888;
+}

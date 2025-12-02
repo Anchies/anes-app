@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1nes AI – Job Helper</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="app">
+        <header class="app-header">
+            <h1>1nes AI</h1>
+            <p class="subtitle">Your job & coding co-pilot</p>
+        </header>
+
+        <section class="mode-switcher">
+            <button class="mode-btn active" data-mode="ideas">What should I do?</button>
+            <button class="mode-btn" data-mode="tasks">Break it down</button>
+            <button class="mode-btn" data-mode="code">Code helper</button>
+        </section>
+
+        <section class="input-section">
+            <label for="promptInput" class="label">Tell 1nes AI what you need:</label>
+            <textarea
+                id="promptInput"
+                rows="5"
+                placeholder="Example: I want to make money online but don't know what to focus on..."
+            ></textarea>
+            <button id="runBtn">Ask 1nes AI</button>
+        </section>
+
+        <section class="output-section">
+            <h2>AI Response</h2>
+            <div id="responseBox" class="response-box">
+                <p class="placeholder">Ask something above and I’ll build a plan for you.</p>
+            </div>
+        </section>
+
+        <footer class="app-footer">
+            <span>v1.0 – powered by OpenAI + Netlify</span>
+        </footer>
+    </div>
+
+    <!-- IMPORTANT: Correct script path -->
+    <script src="scripts/script.js"></script>
+</body>
+</html>
