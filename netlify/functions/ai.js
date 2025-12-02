@@ -21,11 +21,14 @@ exports.handler = async (event) => {
     const apiKey = process.env.OPENAI_API_KEY;
 
     if (!apiKey) {
-      return {
-        statusCode: 500,
-        body: JSON.stringify({ error: "Missing OPENAI_API_KEY" }),
-      };
-    }
+  return {
+    statusCode: 500,
+    body: JSON.stringify({
+      error: "Missing OPENAI_API_KEY",
+      debug: "env key not found",
+    }),
+  };
+}
 
     // NEW OPENAI API ENDPOINT
     const response = await fetch("https://api.openai.com/v1/responses", {
