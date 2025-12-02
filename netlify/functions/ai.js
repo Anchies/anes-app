@@ -1,5 +1,8 @@
 // Netlify serverless function for 1nes AI
 
+// Fix for Netlify: include fetch manually
+const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
+
 exports.handler = async (event, context) => {
     if (event.httpMethod !== "POST") {
         return {
@@ -31,6 +34,7 @@ exports.handler = async (event, context) => {
         ];
 
         const apiKey = process.env.OPENAI_API_KEY;
+
         if (!apiKey) {
             return {
                 statusCode: 500,
