@@ -25,7 +25,7 @@ modeButtons.forEach((btn) => {
     });
 });
 
-// REAL AI BACKEND REQUEST
+// Handle click
 runBtn.addEventListener("click", async () => {
     const prompt = promptInput.value.trim();
     if (!prompt) {
@@ -39,9 +39,12 @@ runBtn.addEventListener("click", async () => {
     responseBox.innerHTML = "<p class='placeholder'>1nes AI is thinking...</p>";
 
     try {
+        // FINAL FIX — CORRECT NETLIFY FUNCTION URL
         const res = await fetch("/.netlify/functions/ai", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+            },
             body: JSON.stringify({ prompt, mode: currentMode }),
         });
 
@@ -50,6 +53,7 @@ runBtn.addEventListener("click", async () => {
         responseBox.innerHTML = data.ai
             ? data.ai.replace(/\n/g, "<br>")
             : "<p>No response from backend.</p>";
+
     } catch (err) {
         console.error(err);
         responseBox.innerHTML =
@@ -59,11 +63,3 @@ runBtn.addEventListener("click", async () => {
     runBtn.disabled = false;
     runBtn.textContent = "Ask 1nes AI";
 });
-
-// Escape user input to avoid HTML injection
-function escapeHtml(str) {
-    return str
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
-}
